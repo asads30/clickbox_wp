@@ -1,0 +1,518 @@
+.modal1 {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* modal1 Content/Box */
+.modal1-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 50%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#create-order {
+  width: 100%;
+  height: 50px;
+  font-size: 18px;
+}
+
+.btn-pochtamat{
+height: 40px;
+line-height: 40px;
+font-size: 16px;
+}
+
+.btn-pochtamat{
+background: #2ecc71 !important;
+}
+
+.pcht-back{
+height: 40px;
+line-height: 40px;
+font-size: 16px;
+}
+
+.pcht-back{
+background: #7f8c8d !important;
+}
+
+.btn-pochtamat.btn-danger{
+background: #e74c3c !important;
+}
+
+.clickbox-btn-save{
+margin-left: 15px !important;
+}
+
+.clickbox-btn-close{
+background: #34495e !important;
+}
+
+.clickbox-btn-edit{
+background: #575757 !important;
+}
+
+.clickbox-btn-save{
+background: #0c9043 !important;
+}
+
+.clickbox-modal .tingle-modal-box{
+width: 70% !important;
+}
+
+.clickbox-modal-place .tingle-modal-box{
+width: 40% !important;
+}
+
+.clickbox-modal .tingle-modal-box__content{
+padding: 1.5rem !important;
+}
+
+.tingle-modal__close{
+line-height: 40px !important;
+background: #c0392b !important;
+width: 40px !important;
+height: 40px !important;
+display: flex !important;
+justify-content: center !important;
+align-items: center !important;
+}
+
+.tingle-modal__closeIcon{
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+.tingle-modal__closeIcon>svg{
+width: 20px;
+height: 20px;
+}
+
+.tingle-modal__closeIcon>svg>path{
+fill: #fff;
+width: 20px;
+height: 20px;
+}
+
+.selectBox {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.selectBox>h5 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.tingle-modal-box__content{
+font-family: 'Fira Sans';
+}
+
+.pchtName{
+font-size: 18px;
+font-weight: 700;
+color: #000;
+margin-top: 0;
+}
+
+.pchtDes{
+font-size: 15px;
+}
+
+.pchtDes>span{
+font-weight: 700;
+}
+
+#pochtamat-place{
+height: auto;
+width: 100%;
+}
+
+.pchtBox{
+display: flex;
+margin-bottom: 30px;
+}
+
+.pchtImage{
+padding: 0 20px 0 0;
+width: 40%;
+}
+
+.pchtText{
+width: 60%;
+}
+
+.pchtMarsh>span{
+font-weight: 700;
+}
+
+.pchtBtns{
+display: flex;
+justify-content: space-between;
+}
+
+.pochtomat-box{
+display: flex;
+}
+
+.bringo-box{
+display: flex;
+}
+
+#pochtomat-list{
+width: 30%;
+height: 500px;
+overflow-y: scroll;
+padding: 0 20px 0 0;
+}
+
+#pochtomat-list::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
+  background-color: #fff;
+}
+
+#pochtomat-list::-webkit-scrollbar {
+  width: 4px;
+  background-color: #fff;
+}
+
+#pochtomat-list::-webkit-scrollbar-thumb {
+  -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, .3);
+  background-color: #7188a2;
+}
+
+#pochtamat-map{
+height: 500px;
+width: 70%;
+}
+
+#bringo-map{
+height: 500px;
+width: 100%;
+}
+
+.pochtomats-item{
+padding: 15px;
+border: 1px solid #eaeaea;
+}
+
+.pochtomats-item:hover {
+  background: #00b1e3;
+  color: #fff;
+  cursor: pointer;
+}
+
+.pochtomats-address {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.pochtomats-name {
+  font-size: 15px;
+}
+
+.pochtomats-des {
+  font-size: 13px;
+}
+
+.bringo-footer{
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+#bringo-button-select{
+padding: 0 50px;
+}
+
+.bringo-modal-tashkent .tingle-modal-box{
+width: 30% !important;
+}
+
+.bringo-modal-tashkent .tingle-modal-box__content{
+padding: 0 !important;
+}
+
+#bringo-close-btn{
+width: 100%;
+border-radius: 0;
+border-bottom-left-radius: 5px;
+border-bottom-right-radius: 5px;
+}
+
+#bringo-text{
+padding: 20px;
+text-align: center;
+font-size: 18px;
+font-weight: 700;
+}
+
+.bringo-conf-box {
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 0 20px 20px;
+}
+
+.bringo-confirm-input{
+border-radius: 50px;
+padding: 12px 20px;
+margin: 0 5px;
+width: 100%;
+}
+
+.bringo-confirm-input:first-child{
+margin-left: 0;
+}
+
+.bringo-confirm-input:last-child{
+margin-right: 0;
+}
+
+.bringo-confirm-textarea{
+width: 100%;
+}
+
+#bringo-conform-btn{
+width: 100%;
+}
+
+.bringo-header{
+display: flex;
+}
+
+.bringo-header>input{
+width: calc(80% - 20px);
+margin-right: 20px;
+height: 50px !important;
+border-radius: 5px !important;
+}
+
+.bringo-header>button{
+width: 20%;
+height: 50px;
+border-radius: 5px;
+}
+
+#map{
+height: 0;
+width: 100%;
+position: relative;
+}
+
+#notice{
+  color: #e74c3c;
+  font-weight: 600;
+margin: 0;
+}
+
+.bringo-footer{
+width: 100%;
+display: none;
+align-items: center;
+justify-content: space-between;
+}
+
+.bringo-map-footer{
+width: 100%;
+display: flex;
+align-items: center;
+justify-content: space-between;
+margin-top: 20px;
+}
+
+.bringo-footer>button, .bringo-map-footer>button{
+height: 45px;
+  line-height: 45px;
+  font-size: 16px;
+}
+
+#bringo-clear, #back-map{
+background: #7f8c8d !important;
+}
+
+#bringo-button-select{
+background: #2ecc71 !important;
+}
+
+#bringo-button-select2{
+background: #e74c3c !important;
+}
+
+#bringo-button-select2.active{
+background: #2ecc71 !important;
+}
+
+#bringo-edit{
+margin-right: 10px;
+}
+
+#bringo-confirm-textarea{
+width: 100%;
+}
+
+#bringo-error {
+  display: none;
+  align-items: center;
+  margin: 10px 0 0;
+}
+
+#changeMap{
+display: block;
+  margin-left: 10px;
+  height: 35px;
+  line-height: 35px;
+  font-size: 14px;
+  padding: 0 30px;
+}
+
+.bringo-conf-box>input{
+  width: 100%;
+}
+
+@media screen and (max-width:991px) {
+  #bringo-map{
+  height: 400px;  
+}
+.bringo-box{
+  flex-direction: column;
+}
+.clickbox-modal{
+  padding: 20px !important;
+}
+.clickbox-modal .tingle-modal-box{
+  height: calc(100vh - 40px) !important;
+}
+.clickbox-modal .tingle-modal-box__content{
+  padding: 20px !important;
+}
+.pochtomat-box{
+  flex-direction: column-reverse;
+}
+#pochtomat-list{
+  height: calc(50vh - 40px) !important;
+  width: 100% !important;
+  overflow-y: scroll !important;
+  padding: 0 !important;
+}
+#pochtamat-map{
+  height: calc(50vh - 40px) !important;
+  width: 100% !important;
+}
+#pochtamat-place{
+  height: 100%;
+}
+.clickbox-modal .tingle-modal-box{
+  width: 100% !important;
+}
+.pchtBox{
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+.pchtImage{
+  padding: 0;
+  width: 100%;
+  margin-bottom: 20px;
+}
+.pchtText{
+  width: 100%;
+}
+.clickbox-modal-place .tingle-modal-box{
+  width: 100% !important;
+}
+.pchtImage{
+  text-align: center;
+}
+.pchtImage>img{
+  width: auto;
+  max-height: 240px;
+}
+.pchtMarsh {
+  margin-bottom: 8px;
+}
+.clickbox-modal-place .tingle-modal-box{
+  height: auto !important;
+}
+.pchtBtns{
+  flex-direction: column;
+  justify-content: center;
+}
+.pchtBtns>button{
+  width: 100%;
+}
+.pcht-back{
+  margin-bottom: 10px;
+}
+.pochtomats-item{
+  padding: 10px;
+}
+.pochtomats-address{
+  font-size: 14px;
+}
+.pochtomats-name{
+  font-size: 13px;
+}
+.pochtomats-des{
+  font-size: 12px;
+}
+.bringo-modal-map.clickbox-modal .tingle-modal-box{
+height: auto !important;
+}
+.bringo-header{
+flex-direction: column;
+}
+.bringo-header>input{
+    width: 100%;
+    margin-right: 0;
+}
+.bringo-header>button{
+    width: 100%;
+}
+.bringo-footer, .bringo-map-footer{
+    flex-direction: column;
+}
+.bringo-footer>button, .bringo-map-footer>button{
+    width: 100%;
+}
+#bringo-button-select, #bringo-button-select2{
+    margin-top: 12px;
+}
+.bringo-modal-tashkent.clickbox-modal .tingle-modal-box{
+height: auto !important;
+}
+#bringo-text{
+    padding: 0 0 20px;
+}
+.bringo-conf-box{
+    padding: 0 0 10px;
+}
+}
