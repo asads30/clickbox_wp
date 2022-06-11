@@ -3,64 +3,21 @@
         var api_host = 'https://app.clickbox.uz/api';
         var url_cells = '/merchant/handbooks/cell-types';
         var url_pochtamats = '/merchant/handbooks/postomats';
-        $('input[name^="shipping_method"][value="clickbox"]').prop('checked', true);
-        var currentLang = $('#currentLang').data('lang');
-        $('#billing_phone').inputmask('\\9\\9\\8 (99) 999-99-99');
-        var cell_input = Number($('#clickbox-box').val());
+        var currentLang = 'ru'; // currentLangGET
+        var cell_input = 4; // Select minimal tarifs
         var lists = [];
-        function loadingBtn(id){
-            $(id).addClass('the-loading');
-            $(id).prop('disabled', true);
-        }
-        function loadingBtnFalse(id){
-            $(id).removeClass('the-loading');
-            $(id).prop('disabled', false);
-        }
         var clickboxModal = new tingle.modal({
             footer: false,
             cssClass: ['clickbox-modal'],
             closeLabel: '',
-			onOpen: function(){
-                $('#the4-header').css('z-index', '-1');
-				$('#kalles-section-toolbar_mobile').css('z-index', '-1');
-			},
-			onClose: function() {
-                $('#the4-header').css('z-index', '1001');
-				$('#kalles-section-toolbar_mobile').css('z-index', '1002');
-            },
         });
-
         var clickboxModalPlace = new tingle.modal({
             footer: false,
             closeLabel: '',
             closeMethods: [],
-			onOpen: function(){
-                $('#the4-header').css('z-index', '-1');
-				$('#kalles-section-toolbar_mobile').css('z-index', '-1');
-			},
-            onClose: function() {
-                $('#the4-header').css('z-index', '1001');
-				$('#kalles-section-toolbar_mobile').css('z-index', '1002');
-            },
             cssClass: ['clickbox-modal', 'clickbox-modal-place'],
         });
-
-        var bringoModal = new tingle.modal({
-            footer: false,
-            cssClass: ['clickbox-modal'],
-            closeLabel: '',
-			onOpen: function(){
-                $('#the4-header').css('z-index', '-1');
-				$('#kalles-section-toolbar_mobile').css('z-index', '-1');
-			},
-			onClose: function() {
-                $('#the4-header').css('z-index', '1001');
-				$('#kalles-section-toolbar_mobile').css('z-index', '1002');
-            },
-        });
-    
         clickboxModal.setContent('<div class="pochtomat-box"><div id="pochtomat-list"></div><div id="pochtamat-map"></div></div>');
-        bringoModal.setContent('<div id="bringo-map"></div>');
         clickboxModalPlace.setContent('<div id="pochtamat-place"></div>');
         let goBackText = currentLang == 'uz' ? 'Ortga qaytish' : 'Вернуться назад';
         let goSubmitText = currentLang == 'uz' ? 'Tasdiqlash' : 'Подтвердить';
@@ -126,7 +83,6 @@
         if(clickboxBtn){
             clickboxBtn.addEventListener('click', function(){
                 if(cell_input > 0){
-                    loadingBtn('#clickbox-btn');
                     clickboxModal.open();
                     fetch(
                         api_host+url_pochtamats,
@@ -144,28 +100,16 @@
                         if (response.ok) {
                             let json = await response.json();
                             if (json.data.length > 0) {
-                                loadingBtnFalse('#clickbox-btn');
-                                $('#the4-header').css('z-index', '-1');
-                                $('#kalles-section-toolbar_mobile').css('z-index', '-1');
                                 $('#pochtamat-map').show();
                                 ymaps.ready(init(json.data));
                             } else {
-                                loadingBtnFalse('#clickbox-btn');
-                                $('#the4-header').css('z-index', '-1');
-                                $('#kalles-section-toolbar_mobile').css('z-index', '-1');
                                 $('#pochtamat-map').html('<h4>' + error1 + '</h4>');
                             }
                         } else {
-                            loadingBtnFalse('#clickbox-btn');
-                            $('#the4-header').css('z-index', '-1');
-                            $('#kalles-section-toolbar_mobile').css('z-index', '-1');
                             $('#pochtamat-map').html('<h4>' + error2 + '</h4>');
                         }
                     })
                     .catch((error) => {
-                        loadingBtnFalse('#clickbox-btn');
-                        $('#the4-header').css('z-index', '-1');
-                        $('#kalles-section-toolbar_mobile').css('z-index', '-1');
                         $('#pochtamat-map').html('<h4>' + error2 + '</h4>');
                     });
                 }
@@ -174,8 +118,6 @@
         $(document).on('click', '.btn-pochtamat', function() {
             $('#clickbox-btn').text(submitText);
             $('#clickbox-edit').text(choosePcht);
-            $('#billing_address_1').val('');
-            console.log($('#clickbox_pochtomatid').val());
             clickboxModalPlace.close();
             $('#billing_contactmethod').val('Test: ' + 5);
             if ($(this).data('state') == 1) {
@@ -243,7 +185,6 @@
         $(document).on('click', '.pcht-back', function() {
             clickboxModalPlace.close();
             if(cell_input > 0){
-                loadingBtn('#clickbox-btn');
                 clickboxModal.open();
                 fetch(
                     api_host+url_pochtamats,
@@ -261,28 +202,16 @@
                     if (response.ok) {
                         let json = await response.json();
                         if (json.data.length > 0) {
-                            loadingBtnFalse('#clickbox-btn');
-                            $('#the4-header').css('z-index', '-1');
-							$('#kalles-section-toolbar_mobile').css('z-index', '-1');
                             $('#pochtamat-map').show();
                             ymaps.ready(init(json.data));
                         } else {
-                            loadingBtnFalse('#clickbox-btn');
-                            $('#the4-header').css('z-index', '-1');
-							$('#kalles-section-toolbar_mobile').css('z-index', '-1');
                             $('#pochtamat-map').html('<h4>' + error1 + '</h4>');
                         }
                     } else {
-                        loadingBtnFalse('#clickbox-btn');
-                        $('#the4-header').css('z-index', '-1');
-						$('#kalles-section-toolbar_mobile').css('z-index', '-1');
                         $('#pochtamat-map').html('<h4>' + error2 + '</h4>');
                     }
                 })
                 .catch((error) => {
-                    loadingBtnFalse('#clickbox-btn');
-                    $('#the4-header').css('z-index', '-1');
-					$('#kalles-section-toolbar_mobile').css('z-index', '-1');
                     $('#pochtamat-map').html('<h4>' + error2 + '</h4>');
                 });
             }
