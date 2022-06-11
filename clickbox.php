@@ -18,9 +18,19 @@ if ( ! defined( 'WPINC' ) ) {
 
 define( 'WC_CLICKBOX_PLUGIN_URL', plugin_dir_url(__FILE__) );
 
+function log_me($message) {
+    if ( WP_DEBUG === true ) {
+        if ( is_array($message) || is_object($message) ) {
+            error_log( print_r($message, true) );
+        } else {
+            error_log( $message );
+        }
+    }
+}
+
 if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
     function clickbox_shipping_method(){
-        if (!class_exists('CLickbox_Shipping_Method')) {
+        if (!class_exists('Clickbox_Shipping_Method')) {
             class Clickbox_Shipping_Method extends WC_Shipping_Method
             {
                 /**
@@ -68,6 +78,18 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
                             'type' => 'text',
                             'description' => 'Название способа доставки через почтоматы. По умолчанию: CLICKBox',
                             'default' => 'CLICKBox',
+                        ),
+                        'merchant_id' => array(
+                            'title' => 'Merchant id',
+                            'type' => 'text',
+                            'description' => 'Merchant id',
+                            'default' => '',
+                        ),
+                        'merchant_secret' => array(
+                            'title' => 'Merchant secret',
+                            'type' => 'text',
+                            'description' => 'Merchant secret',
+                            'default' => '',
                         )
                     );
                 }
@@ -162,10 +184,6 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
             'type'          => 'hidden',
             'class'         => array('clickbox_dimensionz'),
             ), $checkout->get_value( 'clickbox_dimensionz' ));
-        woocommerce_form_field( 'clickbox-box', array(
-            'type'          => 'hidden',
-            'class'         => array('clickbox-box'),
-            ), $checkout->get_value( 'clickbox-box' ));
     }
     add_action( 'woocommerce_after_order_notes', 'clickbox_checkout_add', 10, 1 );
 
@@ -175,9 +193,6 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
         }
         if ( ! empty( $_POST['clickbox_dimensionz'] ) ) {
             update_post_meta( $order_id, 'clickbox_dimension_z', sanitize_text_field( $_POST['clickbox_dimensionz'] ) );
-        }
-        if ( ! empty( $_POST['clickbox-box'] ) ) {
-            update_post_meta( $order_id, 'clickbox_box_size', sanitize_text_field( $_POST['clickbox-box'] ) );
         }
     }
     add_action( 'woocommerce_checkout_update_order_meta', 'shipping_apartment_update_order_meta', 10, 1 );
@@ -220,33 +235,38 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 
     function clickbox_register_status( $order_statuses ){
         $order_statuses['wc-clickbox-send'] = array(                                 
-            'label' => _x( 'Готов к отправке', 'Order status', 'woocommerce' ),
+            'label' => _x( 'Отправить в CLICKBox', 'Order status', 'woocommerce' ),
             'public' => false,                                 
             'exclude_from_search' => false,                                 
             'show_in_admin_all_list' => true,                                 
             'show_in_admin_status_list' => true,                                 
-            'label_count' => _n_noop( 'Готов к отправке <span class="count">(%s)</span>', 'Готов к отправке <span class="count">(%s)</span>', 'woocommerce' ),                              
+            'label_count' => _n_noop( 'Отправить в CLICKBox <span class="count">(%s)</span>', 'Отправить в CLICKBox <span class="count">(%s)</span>', 'woocommerce' ),                              
         );      
         return $order_statuses;
     }
     add_filter( 'woocommerce_register_shop_order_post_statuses', 'clickbox_register_status', 10, 1 );
 
     function clickbox_show_status( $order_statuses ) {      
-        $order_statuses['wc-clickbox-send'] = _x( 'Готов к отправке', 'Order status', 'woocommerce' );       
+        $order_statuses['wc-clickbox-send'] = _x( 'Отправить в CLICKBox', 'Order status', 'woocommerce' );       
         return $order_statuses;
     }
     add_filter( 'wc_order_statuses', 'clickbox_show_status', 10, 1 );
 
     function clickbox_getshow_status( $bulk_actions ) {
-        $bulk_actions['mark_clickbox-send'] = 'Изменить статус на Готов к отправке';
+        $bulk_actions['mark_clickbox-send'] = 'Изменить статус на Отправить в CLICKBox';
         return $bulk_actions;
     }
     add_filter( 'bulk_actions-edit-shop_order', 'clickbox_getshow_status', 10, 1 );
 
     function clickbox_get_status($order){
+        $clickbox_method_shipping = get_option( 'woocommerce_clickbox_settings' );
+        $merchant_id = $clickbox_method_shipping['merchant_id'];
+        $merchant_secret = $clickbox_method_shipping['merchant_secret'];
+        $authToken = $merchant_id . ':' . $merchant_secret;
+        $authTokenEncode = 'Authorization: Basic ' . base64_encode($authToken);
         $context = stream_context_create(array(
                 'http' => array(
-                    'header'  => "Authorization: Basic MTo1ZGU0ZmI3MjcyMGFl"
+                    'header'  => "$authTokenEncode"
                 ),
                 "ssl"=>array(
                     "verify_peer"=>false,
@@ -262,7 +282,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
             $status_click_box = "Заказа нет в кликбокс";
         } else {
             try {
-                $url = file_get_contents("http://app.clickbox.uz/api/merchant/bookings/" . $order->get_meta('clickbox_orderid'), true, $context);
+                $url = file_get_contents("http://dev.clickbox.uz/api/merchant/bookings/" . $order->get_meta('clickbox_orderid'), true, $context);
                 $data = json_decode($url);
                 $status_array = [
                     'waiting_payment' => 'Ожидание оплаты',
@@ -286,22 +306,8 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
                 $status_click_box = 'Заказ в CLICK BOX не найден';
             }
             echo '<strong>ID заказа CLICKBOX: </strong>' . $order->get_meta('clickbox_orderid');
-            echo ' - <a href="https://app.clickbox.uz/admin/orders/' . $order->get_meta('clickbox_orderid') . '" target="_blank">Посмотреть </a>' . '<br />';
-            echo '<strong>Статус заказа в CLICKBOX: </strong>' . $status_click_box . '<br />';
-            if (!$order->get_meta('clickbox_box_size')) {
-                $status_click_box_size = "Коробка не передана";
-            } else {
-                if($order->get_meta('clickbox_box_size') == 1){
-                    $status_click_box_size = "S";
-                } else if($order->get_meta('clickbox_box_size') == 2){
-                    $status_click_box_size = "M";
-                } else if($order->get_meta('clickbox_box_size') == 3){
-                    $status_click_box_size = "L";
-                } else if($order->get_meta('clickbox_box_size') == 4){
-                    $status_click_box_size = "XL";
-                }
-            }
-            echo '<strong>Подходящяя упаковка: </strong>' . $status_click_box_size . '<br />';
+            echo ' - <a href="https://dev.clickbox.uz/admin/orders/' . $order->get_meta('clickbox_orderid') . '" target="_blank">Посмотреть </a>' . '<br />';
+            echo '<strong>Статус заказа в CLICKBOX: </strong>' . $status_click_box . '<br />';            
             echo '<strong>Адрес почтомата: </strong>' . $address_clickbox;
         }
     }
@@ -310,23 +316,26 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
     function clickbox_order_sendpay( $order_id, $order ) {
         try {
             if ($order->get_meta('clickbox_orderid')) {
-                $curl = curl_init();
-                curl_setopt_array($curl, array(
-                CURLOPT_URL => 'https://app.clickbox.uz/api/merchant/bookings/'.$order->get_meta('clickbox_orderid').'/pay',
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'PUT',
-                CURLOPT_HTTPHEADER => array(
-                        'Accept: application/json',
-                        'Content-Type: application/json',
-                        'Authorization: Basic MTo1ZGU0ZmI3MjcyMGFl'
-                    ),
-                ));
-                $response = curl_exec($curl);
+                $url = "https://dev.clickbox.uz/api/merchant/bookings/" . $order->get_meta('clickbox_orderid') . "/pay";
+                $curl = curl_init($url);
+                curl_setopt($curl, CURLOPT_URL, $url);
+                curl_setopt($curl, CURLOPT_PUT, true);
+                curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+                $clickbox_method_shipping = get_option( 'woocommerce_clickbox_settings' );
+                $merchant_id = $clickbox_method_shipping['merchant_id'];
+                $merchant_secret = $clickbox_method_shipping['merchant_secret'];
+                $authToken = $merchant_id . ':' . $merchant_secret;
+                $authTokenEncode = 'Authorization: Basic ' . base64_encode($authToken);
+                $headers = array(
+                    'Accept: application/json',
+                    'Content-Type: application/json',
+                    $authTokenEncode
+                );
+                curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+                curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+                curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+                $resp = curl_exec($curl);
+                log_me($resp);
                 curl_close($curl);
             }
         } catch (\Exception $exception) {
@@ -338,23 +347,26 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 	function clickbox_order_sendcancel( $order_id, $order ) {
         try {
             if ($order->get_meta('clickbox_orderid')) {
-                $curl = curl_init();
-                curl_setopt_array($curl, array(
-                CURLOPT_URL => 'https://app.clickbox.uz/api/merchant/bookings/'.$order->get_meta('clickbox_orderid').'/cancel',
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'PUT',
-                CURLOPT_HTTPHEADER => array(
-                        'Accept: application/json',
-                        'Content-Type: application/json',
-                        'Authorization: Basic MTo1ZGU0ZmI3MjcyMGFl'
-                    ),
-                ));
-                $response = curl_exec($curl);
+                $url = "https://dev.clickbox.uz/api/merchant/bookings/" . $order->get_meta('clickbox_orderid') . "/cancel";
+                $curl = curl_init($url);
+                curl_setopt($curl, CURLOPT_URL, $url);
+                curl_setopt($curl, CURLOPT_PUT, true);
+                curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+                $clickbox_method_shipping = get_option( 'woocommerce_clickbox_settings' );
+                $merchant_id = $clickbox_method_shipping['merchant_id'];
+                $merchant_secret = $clickbox_method_shipping['merchant_secret'];
+                $authToken = $merchant_id . ':' . $merchant_secret;
+                $authTokenEncode = 'Authorization: Basic ' . base64_encode($authToken);
+                $headers = array(
+                    'Accept: application/json',
+                    'Content-Type: application/json',
+                    $authTokenEncode
+                );
+                curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+                curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+                curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+                $resp = curl_exec($curl);
+                log_me($resp);
                 curl_close($curl);
             }
         } catch (\Exception $exception) {
@@ -363,7 +375,6 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
     }
     add_action( 'woocommerce_order_status_cancelled', 'clickbox_order_sendcancel', 20, 2 ); 
 
-    add_action( 'woocommerce_checkout_order_processed', 'order_send_clickbox', 20, 2 );
     function order_send_clickbox( $order_id, $order ){
         $ordermeta = new WC_Order( $order_id );
         $orderwc = wc_get_order($order_id);
@@ -374,10 +385,15 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
         $celltypeid = $orderwc->get_meta('clickbox_cell_type');
         $dimensionz = $orderwc->get_meta('clickbox_dimension_z');
         $billing_first_name = $ordermeta->get_billing_first_name();
-        $product_name = 'ID заказа в Market: ' . $order_id;
+        $product_name = 'ID заказа в мерчанте: ' . $order_id;
+        $clickbox_method_shipping = get_option( 'woocommerce_clickbox_settings' );
+        $merchant_id = $clickbox_method_shipping['merchant_id'];
+        $merchant_secret = $clickbox_method_shipping['merchant_secret'];
+        $authToken = $merchant_id . ':' . $merchant_secret;
+        $authTokenEncode = 'Authorization: Basic ' . base64_encode($authToken);
         if( $ordermeta->has_shipping_method('clickbox') ) {
             try {
-                $url = "https://app.clickbox.uz/api/merchant/booking/delivery-to-cell";
+                $url = "https://dev.clickbox.uz/api/merchant/booking/delivery-to-cell";
                 $curl = curl_init($url);
                 curl_setopt($curl, CURLOPT_URL, $url);
                 curl_setopt($curl, CURLOPT_POST, true);
@@ -385,7 +401,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
                 $headers = array(
                     'Accept: application/json',
                     'Content-Type: application/json',
-                    'Authorization: Basic MTo1ZGU0ZmI3MjcyMGFl'
+                    $authTokenEncode
                 );
                 curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
                 $dataSend = array(
@@ -396,7 +412,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
                     "lng" => "69.313307",
                     "lat" => "41.326666",
                     "distance" => 20000,
-                    "sender_name" => "CLICK Market",
+                    "sender_name" => $merchant_id,
                     "cells" => array(
                         array(
                             "name" => $product_name,
@@ -431,4 +447,5 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
             }
         }
     }
+    add_action( 'woocommerce_checkout_order_processed', 'order_send_clickbox', 20, 2 );
 }

@@ -1,6 +1,6 @@
 (function($) {
     $(window).on('load', function(){
-        var api_host = 'https://app.clickbox.uz/api';
+        var api_host = 'https://dev.clickbox.uz/api';
         var url_cells = '/merchant/handbooks/cell-types';
         var url_pochtamats = '/merchant/handbooks/postomats';
         var currentLang = 'ru'; // currentLangGET
@@ -102,6 +102,7 @@
                             if (json.data.length > 0) {
                                 $('#pochtamat-map').show();
                                 ymaps.ready(init(json.data));
+                                console.log(json.data);
                             } else {
                                 $('#pochtamat-map').html('<h4>' + error1 + '</h4>');
                             }
