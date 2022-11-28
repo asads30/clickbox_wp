@@ -3,8 +3,8 @@
         var api_host = 'https://dev.clickbox.uz/api';
         var url_cells = '/merchant/handbooks/cell-types';
         var url_pochtamats = '/merchant/handbooks/postomats';
-        var currentLang = 'ru'; // currentLangGET
-        var cell_input = 4; // Select minimal tarifs
+        var currentLang = 'ru';
+        var cell_input = 4;
         var lists = [];
         var clickboxModal = new tingle.modal({
             footer: false,
@@ -19,20 +19,20 @@
         });
         clickboxModal.setContent('<div class="pochtomat-box"><div id="pochtomat-list"></div><div id="pochtamat-map"></div></div>');
         clickboxModalPlace.setContent('<div id="pochtamat-place"></div>');
-        let goBackText = currentLang == 'uz' ? 'Ortga qaytish' : 'Вернуться назад';
-        let goSubmitText = currentLang == 'uz' ? 'Tasdiqlash' : 'Подтвердить';
-        let leaveText = currentLang == 'uz' ? 'Qoldirish' : 'Оставить';
-        let editText = currentLang == 'uz' ? 'O\'zgartirish' : 'Изменить';
-        let submitText = currentLang == 'uz' ? 'Tanlash' : 'Выбрать';
-        let cancelText = currentLang == 'uz' ? 'Bekor qilish' : 'Отменить';
-        let addressText = currentLang == 'uz' ? 'Manzil' : 'Адрес';
-        let getThereText = currentLang == 'uz' ? 'Qanday borsa bo\'ladi' : 'Как добраться';
-        let referenceText = currentLang == 'uz' ? 'Mo\'ljal' : 'Ориентир';
-        let whyFind = currentLang == 'uz' ? 'Qanday topish mumkin' : 'Как найти';
-        let workTime = currentLang == 'uz' ? 'Ish vaqti' : 'Режим работы';
-        let error1 = currentLang == 'uz' ? 'Afsuski, bo\'sh pochtomat yo\'q. Mahsulotlarni savatchadan kamaytiring (agar ko\'p bo\'lsa)' : 'К сожалению свободных почтоматов не осталось. Попробуйте удалить товары с корзины (если их много)';
-        let error2 = currentLang == 'uz' ? 'HTTP xato. Iltimos, qo\'llab-quvvatlash xizmatiga qo\'ng\'iroq qiling' : 'Ошибка HTTP. Пожалуйста, позвоните к службу поддержки';
-        let choosePcht = currentLang == 'uz' ? 'Pochtomat tanlang' : 'Выберите почтомат';
+        var goBackText = currentLang == 'uz' ? 'Ortga qaytish' : 'Вернуться назад';
+        var goSubmitText = currentLang == 'uz' ? 'Tasdiqlash' : 'Подтвердить';
+        var leaveText = currentLang == 'uz' ? 'Qoldirish' : 'Оставить';
+        var editText = currentLang == 'uz' ? 'O\'zgartirish' : 'Изменить';
+        var submitText = currentLang == 'uz' ? 'Tanlash' : 'Выбрать';
+        var cancelText = currentLang == 'uz' ? 'Bekor qilish' : 'Отменить';
+        var addressText = currentLang == 'uz' ? 'Manzil' : 'Адрес';
+        var getThereText = currentLang == 'uz' ? 'Qanday borsa bo\'ladi' : 'Как добраться';
+        var referenceText = currentLang == 'uz' ? 'Mo\'ljal' : 'Ориентир';
+        var whyFind = currentLang == 'uz' ? 'Qanday topish mumkin' : 'Как найти';
+        var workTime = currentLang == 'uz' ? 'Ish vaqti' : 'Режим работы';
+        var error1 = currentLang == 'uz' ? 'Afsuski, bo\'sh pochtomat yo\'q. Mahsulotlarni savatchadan kamaytiring (agar ko\'p bo\'lsa)' : 'К сожалению свободных почтоматов не осталось. Попробуйте удалить товары с корзины (если их много)';
+        var error2 = currentLang == 'uz' ? 'HTTP xato. Iltimos, qo\'llab-quvvatlash xizmatiga qo\'ng\'iroq qiling' : 'Ошибка HTTP. Пожалуйста, позвоните к службу поддержки';
+        var choosePcht = currentLang == 'uz' ? 'Pochtomat tanlang' : 'Выберите почтомат';
         function init(pochtamats = null) {
             $('#pochtamat-map').html('');
             $('#pochtamat-place').html('');
@@ -54,10 +54,10 @@
                             iconColor: '#0095b6'
                         });
                     marker.events.add('balloonopen', function addPochtomat(e) {
-                        let pcht1 = '<h4 class="pchtName">'+pochtamat.name+'</h4><p class="pchtDes"><span>' + addressText + ': </span>'+pochtamat.address+'</p>';
-                        let imagePochtomat = (pochtamat.images[0]) ? '<div class="pchtImage"><img src="'+pochtamat.images[0]+'" class="pchtImg" width="100%"></div>' : '<div class="pchtImage"><img src="https://www.spot.uz/media/img/2021/11/B6LGmS16375611296395_b.jpg" class="pchtImg" width="100%"></div>'
-                        let pcht2 = '<div class="pchtBox">'+imagePochtomat+'<div class="pchtText"><p class="pchtMarsh"><span>' + getThereText + ': </span>'+pochtamat.instruction+'</p><p class="pchtMarsh"><span>' + referenceText + ': </span>'+pochtamat.reference_point+'</p><p class="pchtMarsh"><span>' + whyFind + ': </span>'+pochtamat.location+'</p><p class="pchtMarsh"><span>' + workTime + ': </span>'+pochtamat.working_hours+'</p></div></div>';
-                        let pcht3 = pochtamat.id == $('#clickbox_pochtomatid').val() ? '<div class="pchtBtns"><button class="pcht-back">' + goBackText + '</button><button type="button" class="btn-pochtamat btn-danger" data-address="'+pochtamat.address+'" data-lng="'+pochtamat.loc_longitude+'" data-lat="'+pochtamat.loc_latitude+'" data-id="'+pochtamat.id+'" data-state="1" id="pcht-edit">' + leaveText + '</button></div>' : '<div class="pchtBtns"><button class="pcht-back">' + goBackText + '</button><button type="button" class="btn-pochtamat btn-success" data-address="'+pochtamat.address+'" data-lng="'+pochtamat.loc_longitude+'" data-lat="'+pochtamat.loc_latitude+'" data-id="'+pochtamat.id+'" data-state="1" id="pcht-select">' + goSubmitText + '</button></div>';
+                        var pcht1 = '<h4 class="pchtName">'+pochtamat.name+'</h4><p class="pchtDes"><span>' + addressText + ': </span>'+pochtamat.address+'</p>';
+                        var imagePochtomat = (pochtamat.images[0]) ? '<div class="pchtImage"><img src="'+pochtamat.images[0]+'" class="pchtImg" width="100%"></div>' : '<div class="pchtImage"><img src="https://www.spot.uz/media/img/2021/11/B6LGmS16375611296395_b.jpg" class="pchtImg" width="100%"></div>'
+                        var pcht2 = '<div class="pchtBox">'+imagePochtomat+'<div class="pchtText"><p class="pchtMarsh"><span>' + getThereText + ': </span>'+pochtamat.instruction+'</p><p class="pchtMarsh"><span>' + referenceText + ': </span>'+pochtamat.reference_point+'</p><p class="pchtMarsh"><span>' + whyFind + ': </span>'+pochtamat.location+'</p><p class="pchtMarsh"><span>' + workTime + ': </span>'+pochtamat.working_hours+'</p></div></div>';
+                        var pcht3 = pochtamat.id == $('#clickbox_pochtomatid').val() ? '<div class="pchtBtns"><button class="pcht-back">' + goBackText + '</button><button type="button" class="btn-pochtamat btn-danger" data-address="'+pochtamat.address+'" data-lng="'+pochtamat.loc_longitude+'" data-lat="'+pochtamat.loc_latitude+'" data-id="'+pochtamat.id+'" data-state="1" id="pcht-edit">' + leaveText + '</button></div>' : '<div class="pchtBtns"><button class="pcht-back">' + goBackText + '</button><button type="button" class="btn-pochtamat btn-success" data-address="'+pochtamat.address+'" data-lng="'+pochtamat.loc_longitude+'" data-lat="'+pochtamat.loc_latitude+'" data-id="'+pochtamat.id+'" data-state="1" id="pcht-select">' + goSubmitText + '</button></div>';
                         clickboxModal.close();
 						clickboxModalPlace.open();
                         $('.clickbox-modal-place').attr('data-step', '01');
@@ -66,10 +66,10 @@
                     });
                     myMap.geoObjects.add(marker);
 					menuItem.find('.pochtomats-address').parent().bind('click', function(){
-						let pcht1 = '<h4 class="pchtName">'+pochtamat.name+'</h4><p class="pchtDes"><span>' + addressText + ': </span>'+pochtamat.address+'</p>';
-                        let imagePochtomat = (pochtamat.images[0]) ? '<div class="pchtImage"><img src="'+pochtamat.images[0]+'" class="pchtImg" width="100%"></div>' : '<div class="pchtImage"><img src="https://www.spot.uz/media/img/2021/11/B6LGmS16375611296395_b.jpg" class="pchtImg" width="100%"></div>'
-                        let pcht2 = '<div class="pchtBox">'+imagePochtomat+'<div class="pchtText"><p class="pchtMarsh"><span>' + getThereText + ': </span>'+pochtamat.instruction+'</p><p class="pchtMarsh"><span>' + referenceText + ': </span>'+pochtamat.reference_point+'</p><p class="pchtMarsh"><span>' + whyFind + ': </span>'+pochtamat.location+'</p><p class="pchtMarsh"><span>' + workTime + ': </span>'+pochtamat.working_hours+'</p></div></div>';
-                        let pcht3 = pochtamat.id == $('#clickbox_pochtomatid').val() ? '<div class="pchtBtns"><button class="pcht-back">' + goBackText + '</button><button type="button" class="btn-pochtamat btn-danger" data-address="'+pochtamat.address+'" data-lng="'+pochtamat.loc_longitude+'" data-lat="'+pochtamat.loc_latitude+'" data-id="'+pochtamat.id+'" data-state="1" id="pcht-edit">' + leaveText + '</button></div>' : '<div class="pchtBtns"><button class="pcht-back">' + goBackText + '</button><button type="button" class="btn-pochtamat btn-success" data-address="'+pochtamat.address+'" data-lng="'+pochtamat.loc_longitude+'" data-lat="'+pochtamat.loc_latitude+'" data-id="'+pochtamat.id+'" data-state="1" id="pcht-select">' + goSubmitText + '</button></div>';
+						var pcht1 = '<h4 class="pchtName">'+pochtamat.name+'</h4><p class="pchtDes"><span>' + addressText + ': </span>'+pochtamat.address+'</p>';
+                        var imagePochtomat = (pochtamat.images[0]) ? '<div class="pchtImage"><img src="'+pochtamat.images[0]+'" class="pchtImg" width="100%"></div>' : '<div class="pchtImage"><img src="https://www.spot.uz/media/img/2021/11/B6LGmS16375611296395_b.jpg" class="pchtImg" width="100%"></div>'
+                        var pcht2 = '<div class="pchtBox">'+imagePochtomat+'<div class="pchtText"><p class="pchtMarsh"><span>' + getThereText + ': </span>'+pochtamat.instruction+'</p><p class="pchtMarsh"><span>' + referenceText + ': </span>'+pochtamat.reference_point+'</p><p class="pchtMarsh"><span>' + whyFind + ': </span>'+pochtamat.location+'</p><p class="pchtMarsh"><span>' + workTime + ': </span>'+pochtamat.working_hours+'</p></div></div>';
+                        var pcht3 = pochtamat.id == $('#clickbox_pochtomatid').val() ? '<div class="pchtBtns"><button class="pcht-back">' + goBackText + '</button><button type="button" class="btn-pochtamat btn-danger" data-address="'+pochtamat.address+'" data-lng="'+pochtamat.loc_longitude+'" data-lat="'+pochtamat.loc_latitude+'" data-id="'+pochtamat.id+'" data-state="1" id="pcht-edit">' + leaveText + '</button></div>' : '<div class="pchtBtns"><button class="pcht-back">' + goBackText + '</button><button type="button" class="btn-pochtamat btn-success" data-address="'+pochtamat.address+'" data-lng="'+pochtamat.loc_longitude+'" data-lat="'+pochtamat.loc_latitude+'" data-id="'+pochtamat.id+'" data-state="1" id="pcht-select">' + goSubmitText + '</button></div>';
                         clickboxModal.close();
 						clickboxModalPlace.open();
                         $('.clickbox-modal-place').attr('data-step', '01');
@@ -79,7 +79,7 @@
                 });
             }
         }
-        let clickboxBtn = document.getElementById('clickbox-btn');
+        var clickboxBtn = document.getElementById('clickbox-btn');
         if(clickboxBtn){
             clickboxBtn.addEventListener('click', function(){
                 if(cell_input > 0){
@@ -98,7 +98,7 @@
                     )
                     .then(async (response) => {
                         if (response.ok) {
-                            let json = await response.json();
+                            var json = await response.json();
                             if (json.data.length > 0) {
                                 $('#pochtamat-map').show();
                                 ymaps.ready(init(json.data));
@@ -110,7 +110,7 @@
                             $('#pochtamat-map').html('<h4>' + error2 + '</h4>');
                         }
                     })
-                    .catch((error) => {
+                    .catch(() => {
                         $('#pochtamat-map').html('<h4>' + error2 + '</h4>');
                     });
                 }
@@ -136,9 +136,9 @@
                 )
                 .then(async (response) => {
                     if (response.ok) {
-                        let json = await response.json();
+                        var json = await response.json();
                         lists = json.data;
-                        let trueSizes = lists.filter(function(item){
+                        var trueSizes = lists.filter(function(item){
                             return item.is_free == true;
                         });
                         if(trueSizes.length == 0){
@@ -201,7 +201,7 @@
                 )
                 .then(async (response) => {
                     if (response.ok) {
-                        let json = await response.json();
+                        var json = await response.json();
                         if (json.data.length > 0) {
                             $('#pochtamat-map').show();
                             ymaps.ready(init(json.data));

@@ -18,15 +18,15 @@ if ( ! defined( 'WPINC' ) ) {
 
 define( 'WC_CLICKBOX_PLUGIN_URL', plugin_dir_url(__FILE__) );
 
-function log_me($message) {
-    if ( WP_DEBUG === true ) {
-        if ( is_array($message) || is_object($message) ) {
-            error_log( print_r($message, true) );
-        } else {
-            error_log( $message );
-        }
-    }
-}
+// function log_me($message) {
+//     if ( WP_DEBUG === true ) {
+//         if ( is_array($message) || is_object($message) ) {
+//             error_log( print_r($message, true) );
+//         } else {
+//             error_log( $message );
+//         }
+//     }
+// }
 
 if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
     function clickbox_shipping_method(){
@@ -47,7 +47,8 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
                     $this->method_description = 'CLICKBox - доставка в почтоматы';
                     $this->supports = array(
                         'shipping-zones',
-                        'settings'
+                        'instance-settings',
+                        'instance-settings-modal',
                     );
                     load_plugin_textdomain( 'clickbox', false, dirname( plugin_basename( __FILE__ ) ) . '/i18n/languages/');
                     $this->availability = 'including';
@@ -76,7 +77,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
                         'title' => array(
                             'title' => 'Название',
                             'type' => 'text',
-                            'description' => 'Название способа доставки через почтоматы. По умолчанию: CLICKBox',
+                            'description' => 'Название способа доставки. По умолчанию: CLICKBox',
                             'default' => 'CLICKBox',
                         ),
                         'merchant_id' => array(
